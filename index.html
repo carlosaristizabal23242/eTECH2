@@ -3,72 +3,1544 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tienda Tech - Electrónicos</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Etech - Tu Tienda Tecnológica</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --secondary: #3b82f6;
+      --dark: #111827;
+      --light: #ffffff;
+      --bg-dark: #1e293b;
+      --bg-light: #f1f5f9;
+      --purple: #6d28d9;
+      --blue: #0ea5e9;
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --radius: 8px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-light);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* === HEADER === */
+    header {
+      background: var(--bg-dark);
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .cart-icon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #fbbf24;
+      color: black;
+      font-size: 0.7rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* === SIDEBAR === */
+    .sidebar {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      width: 200px;
+      height: calc(100vh - 60px);
+      background: linear-gradient(180deg, var(--purple), var(--bg-dark));
+      color: white;
+      padding: 20px 0;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+      z-index: 99;
+      transition: var(--transition);
+      display: none;
+    }
+
+    .sidebar.visible {
+      display: block;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0 16px;
+    }
+
+    .sidebar li {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .sidebar li:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* === BANNER AZUL === */
+    .banner {
+      height: 200px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      padding: 0 20px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .banner h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .banner p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin-top: 10px;
+    }
+
+    /* === CATEGORIES GRID === */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      padding: 0 20px;
+      margin-bottom: 40px;
+      justify-content: center;
+    }
+
+    .category-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 150px;
+    }
+
+    .category-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .category-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      color: var(--primary);
+    }
+
+    .category-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    /* === PRODUCTOS POR CATEGORÍA === */
+    .category-page {
+      display: none;
+      padding: 20px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin: 20px auto;
+      max-width: 1000px;
+    }
+
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .category-header h2 {
+      font-size: 1.8rem;
+      color: var(--dark);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .product-img {
+      height: 160px;
+      background: #e0e7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--primary);
+    }
+
+    .product-info {
+      padding: 16px;
+    }
+
+    .product-info h3 {
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    .price {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    .stars {
+      color: #fbbf24;
+      margin: 4px 0;
+      font-size: 0.9rem;
+    }
+
+    /* === PRODUCTO DETALLE MODAL === */
+    .product-detail-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-detail-content {
+      background: white;
+      border-radius: var(--radius);
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .product-detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .product-detail-img {
+      width: 100px;
+      height: 100px;
+      background: #e0e7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--primary);
+      border-radius: var(--radius);
+      margin-right: 20px;
+    }
+
+    .product-detail-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .product-detail-price {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 10px 0;
+    }
+
+    .product-detail-stars {
+      color: #fbbf24;
+      margin: 10px 0;
+      font-size: 1.1rem;
+    }
+
+    .product-detail-desc {
+      margin: 20px 0;
+      line-height: 1.5;
+      color: var(--gray);
+    }
+
+    .product-detail-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-add-cart {
+      flex: 1;
+      padding: 10px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-close-detail {
+      padding: 10px;
+      background: #6b7280;
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    /* === PCONSTRUCTOR === */
+    .pcconstructor-page {
+      display: none;
+      padding: 20px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin: 20px auto;
+      max-width: 1000px;
+    }
+
+    .pcconstructor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .pcconstructor-header h2 {
+      font-size: 1.8rem;
+      color: var(--dark);
+    }
+
+    .pc-components-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    /* === LOGIN/REGISTRO MODAL === */
+    .login-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-content {
+      background: white;
+      border-radius: var(--radius);
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .login-tabs {
+      display: flex;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab.active {
+      border-bottom-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius);
+      font-size: 1rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .switch-link {
+      text-align: center;
+      margin-top: 16px;
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* === CARRITO === */
+    .cart-items {
+      max-height: 250px;
+      overflow-y: auto;
+      margin: 12px 0;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+  ---
+/* === NUEVO MODAL DE PAGO (DISEÑO LIMPIO Y CENTRADO) === */
+.payment-modal {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal visible */
+.payment-modal.active {
+  display: flex; /* Se centra correctamente */
+}
+
+.payment-content {
+  background: white;
+  border-radius: var(--radius);
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+/* Botón para cerrar */
+.close-payment {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  color: var(--gray);
+  cursor: pointer;
+}
+
+
+    .payment-section {
+      margin-bottom: 20px;
+    }
+
+    .payment-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .payment-title i {
+      font-size: 1.1rem;
+      color: var(--primary);
+    }
+
+    .payment-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-field label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--dark);
+    }
+
+    .form-field input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius);
+      font-size: 1rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-field {
+      flex: 1;
+    }
+
+    .btn-payment {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 1rem;
+    }
+
+    .btn-payment:hover {
+      background: var(--primary-dark);
+    }
+
+    .close-payment {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      color: var(--gray);
+      cursor: pointer;
+    }
+
+    /* === BUSCADOR === */
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin: 20px auto;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius);
+      font-size: 1rem;
+    }
+
+    .search-btn {
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    /* === FILTROS === */
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* === PERFIL DE USUARIO === */
+    .user-profile {
+      display: none;
+      padding: 20px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin: 20px auto;
+      max-width: 600px;
+    }
+
+    .user-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .user-header h2 {
+      font-size: 1.8rem;
+      color: var(--dark);
+    }
+
+    .user-info {
+      margin-bottom: 20px;
+    }
+
+    .user-info p {
+      margin: 8px 0;
+    }
+
+    .user-orders {
+      margin-top: 20px;
+    }
+
+    .order-item {
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+    }
+
+    .order-item h4 {
+      margin-bottom: 8px;
+    }
+
+    .order-item p {
+      margin: 4px 0;
+      color: var(--gray);
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        margin-bottom: 20px;
+      }
+      .banner {
+        height: 180px;
+      }
+      .banner h1 {
+        font-size: 2rem;
+      }
+      .categories {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+      .product-detail-content {
+        width: 95%;
+        max-width: 400px;
+      }
+      .payment-content {
+        width: 95%;
+        max-width: 400px;
+      }
+      .search-bar {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- HEADER -->
   <header>
-    <h1>🛒 Tienda Tech</h1>
-    <div id="cart-icon" onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</div>
+    <div class="logo">ETECH</div>
+    <div class="nav-links">
+      <a href="#" id="pcConstructorLink">PCONSTRUCTOR</a>
+      <a href="#" id="productsLink">PRODUCTOS</a>
+      <a href="#" id="loginBtn">LOG IN</a>
+      <a href="#" id="profileBtn" style="display:none;">PERFIL</a>
+      <div class="cart-icon" id="cartBtn">🛒
+        <span class="cart-count" id="cartCount">0</span>
+      </div>
+    </div>
   </header>
 
-  <main>
-    <section class="products">
-      <h2>Productos Destacados</h2>
-      <div class="product-grid" id="product-list"></div>
-    </section>
-  </main>
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li onclick="showCategory('computadoras')">Computadoras</li>
+      <li onclick="showCategory('portatiles')">Portátiles</li>
+      <li onclick="showCategory('tablets')">Tablets</li>
+      <li onclick="showCategory('celulares')">Celulares</li>
+      <li onclick="showCategory('audifonos')">Audífonos</li>
+      <li onclick="showCategory('diademas')">Diademas</li>
+      <li onclick="showCategory('cpus')">CPUs</li>
+      <li onclick="showCategory('gpus')">GPUs</li>
+      <li onclick="showCategory('mothers')">Mothers</li>
+      <li onclick="showCategory('rams')">RAMs</li>
+      <li onclick="showCategory('gabinetes')">Gabinetes</li>
+      <li onclick="showCategory('fuentes')">Fuentes</li>
+      <li onclick="showCategory('almacenamiento')">Almacenamiento</li>
+    </ul>
+  </div>
 
-  <!-- Modal de producto -->
-  <div id="product-modal" class="modal hidden">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <img id="modal-img" src="" alt="Producto">
-      <h2 id="modal-title"></h2>
-      <p id="modal-desc"></p>
-      <div id="modal-rating"></div>
-      <p class="price" id="modal-price"></p>
-      <button onclick="modalAddToCart()">Agregar al carrito</button>
+  <!-- BANNER AZUL -->
+  <div class="banner">
+    <div>
+      <h1>⚡ Etech - Tu Tienda Tecnológica</h1>
+      <p>Celulares, tablets, audífonos, componentes y más. Todo en un solo lugar.</p>
     </div>
   </div>
 
-  <!-- Carrito -->
-  <div id="cart" class="cart hidden">
-    <h2>🛒 Tu Carrito</h2>
-    <div id="cart-items"></div>
-    <p class="total">Total: $<span id="total">0.00</span></p>
-    <button id="checkout-btn" onclick="showPaymentForm()">Pagar Ahora</button>
-    <button onclick="toggleCart()">Cerrar</button>
+  <!-- BUSCADOR -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" class="search-input" placeholder="Buscar productos..." />
+    <button class="search-btn" onclick="searchProducts()">Buscar</button>
   </div>
 
-  <!-- Formulario de pago -->
-  <div id="payment-modal" class="modal hidden">
-    <div class="modal-content payment-form">
-      <span class="close" onclick="closePaymentForm()">&times;</span>
-      <h2>💳 Información de Pago</h2>
-      <form id="payment-form">
-        <label>Nombre del titular</label>
-        <input type="text" id="cardholder" required>
+  <!-- FILTROS -->
+  <div class="filters" id="filters" style="display:none;">
+    <button class="filter-btn" onclick="filterByPrice('all')">Todos</button>
+    <button class="filter-btn" onclick="filterByPrice('under500')">$0 - $500</button>
+    <button class="filter-btn" onclick="filterByPrice('500to1000')">$500 - $1000</button>
+    <button class="filter-btn" onclick="filterByPrice('over1000')">$1000+</button>
+  </div>
 
-        <label>Número de tarjeta</label>
-        <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+  <!-- CATEGORÍAS PRINCIPALES -->
+  <div class="categories" id="categoriesGrid">
+    <div class="category-card" onclick="showCategory('computadoras')">
+      <div class="category-icon">🖥️</div>
+      <div class="category-title">COMPUTADORAS</div>
+    </div>
+    <div class="category-card" onclick="showCategory('portatiles')">
+      <div class="category-icon">💻</div>
+      <div class="category-title">PORTÁTILES</div>
+    </div>
+    <div class="category-card" onclick="showCategory('tablets')">
+      <div class="category-icon">📱</div>
+      <div class="category-title">TABLETS</div>
+    </div>
+    <div class="category-card" onclick="showCategory('celulares')">
+      <div class="category-icon">📱</div>
+      <div class="category-title">CELULARES</div>
+    </div>
+    <div class="category-card" onclick="showCategory('audifonos')">
+      <div class="category-icon">🎧</div>
+      <div class="category-title">AUDÍFONOS</div>
+    </div>
+    <div class="category-card" onclick="showCategory('diademas')">
+      <div class="category-icon">🎤</div>
+      <div class="category-title">DIADÉMAS</div>
+    </div>
+    <div class="category-card" onclick="showCategory('cpus')">
+      <div class="category-icon">⚙️</div>
+      <div class="category-title">CPUS</div>
+    </div>
+    <div class="category-card" onclick="showCategory('gpus')">
+      <div class="category-icon">🎮</div>
+      <div class="category-title">GPUS</div>
+    </div>
+    <div class="category-card" onclick="showCategory('mothers')">
+      <div class="category-icon">🔌</div>
+      <div class="category-title">MOTHERS</div>
+    </div>
+    <div class="category-card" onclick="showCategory('rams')">
+      <div class="category-icon">💾</div>
+      <div class="category-title">RAMS</div>
+    </div>
+    <div class="category-card" onclick="showCategory('gabinetes')">
+      <div class="category-icon">📦</div>
+      <div class="category-title">GABINETES</div>
+    </div>
+    <div class="category-card" onclick="showCategory('fuentes')">
+      <div class="category-icon">⚡</div>
+      <div class="category-title">FUENTES</div>
+    </div>
+    <div class="category-card" onclick="showCategory('almacenamiento')">
+      <div class="category-icon">💾</div>
+      <div class="category-title">STORAGE</div>
+    </div>
+  </div>
 
-        <div class="exp-cvv">
-          <div>
-            <label>Fecha de vencimiento</label>
-            <input type="text" id="expiry" placeholder="MM/AA" maxlength="5" required>
+  <!-- PÁGINA DE CATEGORÍA -->
+  <div class="category-page" id="categoryPage">
+    <div class="category-header">
+      <h2 id="categoryTitle">Categoría</h2>
+      <button class="btn" style="padding:8px 16px; font-size:0.9rem;" onclick="hideCategory()">Volver</button>
+    </div>
+    <div class="products-grid" id="categoryProducts"></div>
+  </div>
+
+  <!-- PCONSTRUCTOR PAGE -->
+  <div class="pcconstructor-page" id="pcConstructorPage">
+    <div class="pcconstructor-header">
+      <h2>🛠️ Constructor de PCs</h2>
+      <button class="btn" style="padding:8px 16px; font-size:0.9rem;" onclick="hidePcConstructor()">Volver</button>
+    </div>
+    <div class="pc-components-grid" id="pcComponents"></div>
+  </div>
+
+  <!-- DETALLE DEL PRODUCTO -->
+  <div class="product-detail-modal" id="productDetailModal">
+    <div class="product-detail-content">
+      <div class="product-detail-header">
+        <div class="product-detail-img" id="detailImg">📱</div>
+        <div>
+          <h3 class="product-detail-title" id="detailTitle">Producto</h3>
+          <div class="product-detail-price" id="detailPrice">$0.00</div>
+          <div class="product-detail-stars" id="detailStars">★★★★☆</div>
+        </div>
+      </div>
+      <div class="product-detail-desc" id="detailDesc">
+        Descripción del producto...
+      </div>
+      <div class="product-detail-actions">
+        <button class="btn-add-cart" onclick="addCurrentProductToCart()">Añadir al carrito</button>
+        <button class="btn-close-detail" onclick="closeProductDetail()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARRITO -->
+  <div class="modal-overlay" id="cartOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>🛒 Tu Carrito</h3>
+        <span class="close-modal" onclick="closeCart()">&times;</span>
+      </div>
+      <div class="cart-items" id="cartItems">
+        <p id="cartEmpty">Tu carrito está vacío.</p>
+      </div>
+      <button class="btn" id="checkoutBtn" onclick="showPaymentForm()" disabled>Pagar</button>
+    </div>
+  </div>
+
+  <!-- LOGIN/REGISTRO MODAL -->
+  <div class="login-modal" id="loginModal">
+    <div class="login-content">
+      <div class="login-tabs">
+        <div class="tab active" onclick="switchTab('login')" id="loginTab">Iniciar Sesión</div>
+        <div class="tab" onclick="switchTab('register')" id="registerTab">Registrarse</div>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div class="tab-content active" id="loginContent">
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="loginEmail" placeholder="tu@email.com" />
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+        <button class="btn" onclick="handleLogin()">Ingresar</button>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div class="tab-content" id="registerContent">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="regName" placeholder="Juan" />
           </div>
-          <div>
-            <label>CVV</label>
-            <input type="text" id="cvv" placeholder="123" maxlength="3" required>
+          <div class="form-group">
+            <label>Apellido</label>
+            <input type="text" id="regLastName" placeholder="Pérez" />
           </div>
         </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="regEmail" placeholder="tu@email.com" />
+        </div>
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" id="regAddress" placeholder="Calle 123, Ciudad" />
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="regPassword" placeholder="••••••••" />
+        </div>
+        <div class="form-group">
+          <label>Confirmar contraseña</label>
+          <input type="password" id="regConfirmPassword" placeholder="••••••••" />
+        </div>
+        <button class="btn" onclick="handleRegister()">Crear cuenta</button>
+      </div>
 
-        <button type="submit">Confirmar Pago</button>
-      </form>
+      <div class="switch-link" onclick="closeLoginModal()">
+        Cerrar
+      </div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- NUEVO MODAL DE PAGO (DISEÑO LIMPIO Y CENTRADO) -->
+  <div class="payment-modal" id="paymentModal">
+    <div class="payment-content">
+      <span class="close-payment" onclick="closePayment()">×</span>
+      <div class="payment-section">
+        <div class="payment-title">
+          <i>🛒</i> Tu Carrito
+        </div>
+        <div id="paymentCartItems">
+          <p>Tu carrito está vacío.</p>
+        </div>
+      </div>
+      <div class="payment-section">
+        <div class="payment-title">
+          <i>💳</i> Pago con Tarjeta
+        </div>
+        <div class="payment-form">
+          <div class="form-field">
+            <label>Número de tarjeta</label>
+            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" />
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Fecha de vencimiento (MM/AA)</label>
+              <input type="text" id="cardExpiry" placeholder="MM/AA" />
+            </div>
+            <div class="form-field">
+              <label>CVV</label>
+              <input type="text" id="cardCVV" placeholder="123" />
+            </div>
+          </div>
+          <button class="btn-payment" onclick="processPayment()">Confirmar Pago</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFIL DE USUARIO -->
+  <div class="user-profile" id="userProfile">
+    <div class="user-header">
+      <h2>👤 Mi Perfil</h2>
+      <button class="btn" style="padding:8px 16px; font-size:0.9rem;" onclick="logoutUser()">Cerrar sesión</button>
+    </div>
+    <div class="user-info">
+      <p><strong>Nombre:</strong> <span id="userName">Juan Pérez</span></p>
+      <p><strong>Correo:</strong> <span id="userEmail">juan@example.com</span></p>
+      <p><strong>Dirección:</strong> <span id="userAddress">Calle 123, Ciudad</span></p>
+    </div>
+    <div class="user-orders">
+      <h3>📦 Historial de Compras</h3>
+      <div id="userOrders">
+        <p>No tienes órdenes aún.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DATOS ---
+    const categories = {
+      computadoras: { name: 'Computadoras', products: [
+        { id: 1, name: 'PC Gamer Pro', price: 1499.99, rating: 4.7, img: 'https://via.placeholder.com/160?text=PC+Gamer', desc: 'Potente PC con RTX 4080 y Ryzen 9.' },
+        { id: 2, name: 'PC Oficina', price: 699.99, rating: 4.3, img: 'https://via.placeholder.com/160?text=PC+Oficina', desc: 'Ideal para trabajo diario y multitarea.' }
+      ] },
+      portatiles: { name: 'Portátiles', products: [
+        { id: 3, name: 'MacBook Air M2', price: 999.99, rating: 4.8, img: 'https://via.placeholder.com/160?text=MacBook+Air', desc: 'Ligero, potente y con excelente batería.' },
+        { id: 4, name: 'Lenovo Yoga 9i', price: 1199.99, rating: 4.6, img: 'https://via.placeholder.com/160?text=Lenovo+Yoga', desc: 'Convertible con pantalla táctil y rotación 360°.' }
+      ] },
+      tablets: { name: 'Tablets', products: [
+        { id: 5, name: 'iPad Pro 12.9"', price: 899.99, rating: 4.9, img: 'https://via.placeholder.com/160?text=iPad+Pro', desc: 'Pantalla mini-LED, Apple Pencil compatible.' },
+        { id: 6, name: 'Samsung Galaxy Tab S9', price: 799.99, rating: 4.7, img: 'https://via.placeholder.com/160?text=Galaxy+Tab', desc: 'Con S Pen y pantalla AMOLED brillante.' }
+      ] },
+      celulares: { name: 'Celulares', products: [
+        { id: 7, name: 'iPhone 15 Pro', price: 999.99, rating: 4.9, img: 'https://via.placeholder.com/160?text=iPhone+15', desc: 'Cámara profesional, chip A17 Pro, diseño premium.' },
+        { id: 8, name: 'Samsung Galaxy S24 Ultra', price: 1099.99, rating: 4.8, img: 'https://via.placeholder.com/160?text=Galaxy+S24', desc: 'Zoom óptico de 10x, pantalla Dynamic AMOLED.' }
+      ] },
+      audifonos: { name: 'Audífonos', products: [
+        { id: 9, name: 'AirPods Pro 2', price: 249.99, rating: 4.8, img: 'https://via.placeholder.com/160?text=AirPods+Pro', desc: 'Cancelación activa de ruido y sonido espacial.' },
+        { id: 10, name: 'Sony WH-1000XM5', price: 399.99, rating: 4.7, img: 'https://via.placeholder.com/160?text=WH-1000XM5', desc: 'Mejor cancelación de ruido del mercado.' }
+      ] },
+      diademas: { name: 'Diademas', products: [
+        { id: 11, name: 'HyperX Cloud II', price: 99.99, rating: 4.6, img: 'https://via.placeholder.com/160?text=HyperX+Cloud', desc: 'Ideal para gaming, sonido envolvente 7.1.' },
+        { id: 12, name: 'SteelSeries Arctis 7', price: 149.99, rating: 4.7, img: 'https://via.placeholder.com/160?text=Arctis+7', desc: 'Inalámbrica, cómoda y con micrófono retráctil.' }
+      ] },
+      cpus: { name: 'CPUs', products: [
+        { id: 13, name: 'Intel Core i9-13900K', price: 599.99, rating: 4.9, img: 'https://via.placeholder.com/160?text=i9-13900K', desc: '24 núcleos, ideal para streaming y edición.' },
+        { id: 14, name: 'AMD Ryzen 9 7950X', price: 699.99, rating: 4.8, img: 'https://via.placeholder.com/160?text=Ryzen+9', desc: '16 núcleos, rendimiento extremo en juegos y render.' }
+      ] },
+      gpus: { name: 'GPUs', products: [
+        { id: 15, name: 'RTX 4080 Super', price: 999.99, rating: 4.9, img: 'https://via.placeholder.com/160?text=RTX+4080', desc: 'Juegos en 4K a 60 FPS, DLSS 3.5.' },
+        { id: 16, name: 'RX 7900 XTX', price: 899.99, rating: 4.7, img: 'https://via.placeholder.com/160?text=RX+7900', desc: 'Alternativa de alto rendimiento a bajo costo.' }
+      ] },
+      mothers: { name: 'Mothers', products: [
+        { id: 17, name: 'Z790 ATX', price: 299.99, rating: 4.5, img: 'https://via.placeholder.com/160?text=Z790+ATX', desc: 'Soporte PCIe 5.0, DDR5, múltiples M.2.' },
+        { id: 18, name: 'B650 MicroATX', price: 199.99, rating: 4.4, img: 'https://via.placeholder.com/160?text=B650+Micro', desc: 'Compacta pero potente, ideal para gaming.' }
+      ] },
+      rams: { name: 'RAMs', products: [
+        { id: 19, name: 'DDR5 32GB 6000MHz', price: 129.99, rating: 4.6, img: 'https://via.placeholder.com/160?text=DDR5+32GB', desc: 'Velocidad extrema para juegos y aplicaciones pesadas.' },
+        { id: 20, name: 'DDR4 16GB 3200MHz', price: 69.99, rating: 4.3, img: 'https://via.placeholder.com/160?text=DDR4+16GB', desc: 'Buena relación precio-rendimiento.' }
+      ] },
+      gabinetes: { name: 'Gabinetes', products: [
+        { id: 21, name: 'Gabinete Mid Tower RGB', price: 89.99, rating: 4.5, img: 'https://via.placeholder.com/160?text=Gabinete+RGB', desc: 'Ventilación excelente y luces RGB personalizables.' },
+        { id: 22, name: 'Gabinete Full Tower', price: 149.99, rating: 4.7, img: 'https://via.placeholder.com/160?text=Gabinete+Full', desc: 'Espacio para múltiples GPUs y enfriamiento líquido.' }
+      ] },
+      fuentes: { name: 'Fuentes', products: [
+        { id: 23, name: 'Fuente 850W 80+ Gold', price: 119.99, rating: 4.6, img: 'https://via.placeholder.com/160?text=Fuente+850W', desc: 'Eficiencia energética y protección contra sobretensiones.' },
+        { id: 24, name: 'Fuente 650W 80+ Bronze', price: 79.99, rating: 4.4, img: 'https://via.placeholder.com/160?text=Fuente+650W', desc: 'Ideal para configuraciones básicas y gaming.' }
+      ] },
+      almacenamiento: { name: 'Almacenamiento', products: [
+        { id: 25, name: 'SSD NVMe 1TB', price: 89.99, rating: 4.8, img: 'https://via.placeholder.com/160?text=SSD+NVMe', desc: 'Velocidades de lectura de hasta 7000 MB/s.' },
+        { id: 26, name: 'HDD 4TB', price: 79.99, rating: 4.5, img: 'https://via.placeholder.com/160?text=HDD+4TB', desc: 'Gran capacidad para almacenar películas, juegos y archivos.' }
+      ] }
+    };
+
+    let cart = [];
+    let currentProduct = null;
+    let user = null;
+
+    // --- FUNCIONES DE NAVEGACIÓN ---
+    document.getElementById('productsLink').onclick = function(e) {
+      e.preventDefault();
+      showCategories();
+    };
+
+    document.getElementById('pcConstructorLink').onclick = function(e) {
+      e.preventDefault();
+      showPcConstructor();
+    };
+
+    document.getElementById('loginBtn').onclick = function(e) {
+      e.preventDefault();
+      openLoginModal();
+    };
+
+    document.getElementById('profileBtn').onclick = function(e) {
+      e.preventDefault();
+      showUserProfile();
+    };
+
+    function showCategories() {
+      hideAllPages();
+      document.getElementById('categoriesGrid').style.display = 'grid';
+      document.getElementById('sidebar').classList.add('visible');
+      document.getElementById('filters').style.display = 'flex';
+    }
+
+    function showPcConstructor() {
+      hideAllPages();
+      document.getElementById('pcConstructorPage').style.display = 'block';
+      document.getElementById('sidebar').classList.remove('visible');
+      document.getElementById('filters').style.display = 'none';
+      renderPcComponents();
+    }
+
+    function hideCategory() {
+      hideAllPages();
+      document.getElementById('categoriesGrid').style.display = 'grid';
+    }
+
+    function hidePcConstructor() {
+      hideAllPages();
+      document.getElementById('categoriesGrid').style.display = 'grid';
+    }
+
+    function hideAllPages() {
+      document.getElementById('categoriesGrid').style.display = 'none';
+      document.getElementById('categoryPage').style.display = 'none';
+      document.getElementById('pcConstructorPage').style.display = 'none';
+      document.getElementById('userProfile').style.display = 'none';
+      document.getElementById('sidebar').classList.remove('visible');
+      document.getElementById('filters').style.display = 'none';
+    }
+
+    // --- RENDERIZAR COMPONENTES PARA PC CONSTRUCTOR ---
+    function renderPcComponents() {
+      const components = [
+        categories.cpus.products[0],
+        categories.gpus.products[0],
+        categories.mothers.products[0],
+        categories.rams.products[0],
+        categories.gabinetes.products[0],
+        categories.fuentes.products[0],
+        categories.almacenamiento.products[0]
+      ];
+
+      const container = document.getElementById('pcComponents');
+      container.innerHTML = '';
+
+      components.forEach(p => {
+        const stars = '★'.repeat(Math.floor(p.rating)) + '☆'.repeat(5 - Math.floor(p.rating));
+        container.innerHTML += `
+          <div class="product-card" onclick="showProductDetail(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+            <div class="product-img"><img src="${p.img}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;"></div>
+            <div class="product-info">
+              <h3>${p.name}</h3>
+              <div class="stars">${stars}</div>
+              <p class="price">$${p.price.toFixed(2)}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // --- FUNCIONES DE CATEGORÍAS ---
+    function showCategory(categoryKey) {
+      const cat = categories[categoryKey];
+      if (!cat) return;
+
+      document.getElementById('categoryTitle').textContent = cat.name;
+      hideAllPages();
+      document.getElementById('categoryPage').style.display = 'block';
+
+      const productsContainer = document.getElementById('categoryProducts');
+      productsContainer.innerHTML = '';
+
+      cat.products.forEach(p => {
+        const stars = '★'.repeat(Math.floor(p.rating)) + '☆'.repeat(5 - Math.floor(p.rating));
+        productsContainer.innerHTML += `
+          <div class="product-card" onclick="showProductDetail(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+            <div class="product-img"><img src="${p.img}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;"></div>
+            <div class="product-info">
+              <h3>${p.name}</h3>
+              <div class="stars">${stars}</div>
+              <p class="price">$${p.price.toFixed(2)}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // --- BUSCAR PRODUCTOS ---
+    function searchProducts() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!query) return;
+
+      hideAllPages();
+      document.getElementById('categoryPage').style.display = 'block';
+      document.getElementById('categoryTitle').textContent = `Resultados para "${query}"`;
+
+      const productsContainer = document.getElementById('categoryProducts');
+      productsContainer.innerHTML = '';
+
+      let found = false;
+      for (const category in categories) {
+        categories[category].products.forEach(p => {
+          if (p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query)) {
+            found = true;
+            const stars = '★'.repeat(Math.floor(p.rating)) + '☆'.repeat(5 - Math.floor(p.rating));
+            productsContainer.innerHTML += `
+              <div class="product-card" onclick="showProductDetail(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+                <div class="product-img"><img src="${p.img}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div class="product-info">
+                  <h3>${p.name}</h3>
+                  <div class="stars">${stars}</div>
+                  <p class="price">$${p.price.toFixed(2)}</p>
+                </div>
+              </div>
+            `;
+          }
+        });
+      }
+
+      if (!found) {
+        productsContainer.innerHTML = '<p>No se encontraron productos.</p>';
+      }
+    }
+
+    // --- FILTRAR POR PRECIO ---
+    function filterByPrice(range) {
+      const buttons = document.querySelectorAll('.filter-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const productsContainer = document.getElementById('categoryProducts');
+      const categoryKey = document.getElementById('categoryTitle').textContent.toLowerCase().replace(' ', '');
+      const cat = categories[categoryKey];
+
+      if (!cat) return;
+
+      productsContainer.innerHTML = '';
+
+      cat.products.forEach(p => {
+        let include = true;
+        if (range === 'under500' && p.price >= 500) include = false;
+        if (range === '500to1000' && (p.price < 500 || p.price > 1000)) include = false;
+        if (range === 'over1000' && p.price <= 1000) include = false;
+
+        if (include) {
+          const stars = '★'.repeat(Math.floor(p.rating)) + '☆'.repeat(5 - Math.floor(p.rating));
+          productsContainer.innerHTML += `
+            <div class="product-card" onclick="showProductDetail(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+              <div class="product-img"><img src="${p.img}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;"></div>
+              <div class="product-info">
+                <h3>${p.name}</h3>
+                <div class="stars">${stars}</div>
+                <p class="price">$${p.price.toFixed(2)}</p>
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      if (productsContainer.innerHTML === '') {
+        productsContainer.innerHTML = '<p>No hay productos en este rango de precio.</p>';
+      }
+    }
+
+    // --- DETALLE DEL PRODUCTO ---
+    function showProductDetail(product) {
+      currentProduct = product;
+      document.getElementById('detailTitle').textContent = product.name;
+      document.getElementById('detailPrice').textContent = `$${product.price.toFixed(2)}`;
+      document.getElementById('detailDesc').textContent = product.desc;
+      document.getElementById('detailImg').innerHTML = `<img src="${product.img}" alt="${product.name}" style="width:100%; height:100%; object-fit:cover;">`;
+      
+      const fullStars = Math.floor(product.rating);
+      document.getElementById('detailStars').textContent = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+      
+      document.getElementById('productDetailModal').style.display = 'flex';
+    }
+
+    function closeProductDetail() {
+      document.getElementById('productDetailModal').style.display = 'none';
+    }
+
+    function addCurrentProductToCart() {
+      if (!currentProduct) return;
+      cart.push(currentProduct);
+      updateCart();
+      saveCartToLocalStorage(); // Guardar en localStorage
+      closeProductDetail();
+      alert(`✅ ${currentProduct.name} añadido al carrito.`);
+    }
+
+    // --- CARRITO ---
+    function updateCart() {
+      document.getElementById('cartCount').textContent = cart.length;
+      const items = document.getElementById('cartItems');
+      const btn = document.getElementById('checkoutBtn');
+      if (cart.length === 0) {
+        items.innerHTML = '<p id="cartEmpty">Tu carrito está vacío.</p>';
+        btn.disabled = true;
+      } else {
+        let html = '';
+        cart.forEach(item => {
+          html += `<div class="cart-item"><span>${item.name}</span><span>$${item.price.toFixed(2)}</span></div>`;
+        });
+        items.innerHTML = html;
+        btn.disabled = false;
+      }
+      updatePaymentCart(); // Actualiza el carrito en el modal de pago
+    }
+
+    function updatePaymentCart() {
+      const paymentItems = document.getElementById('paymentCartItems');
+      if (cart.length === 0) {
+        paymentItems.innerHTML = '<p>Tu carrito está vacío.</p>';
+      } else {
+        let html = '';
+        cart.forEach(item => {
+          html += `<div class="cart-item"><span>${item.name}</span><span>$${item.price.toFixed(2)}</span></div>`;
+        });
+        paymentItems.innerHTML = html;
+      }
+    }
+
+    // --- LOCAL STORAGE ---
+    function saveCartToLocalStorage() {
+      localStorage.setItem('etech_cart', JSON.stringify(cart));
+    }
+
+    function loadCartFromLocalStorage() {
+      const saved = localStorage.getItem('etech_cart');
+      if (saved) {
+        cart = JSON.parse(saved);
+        updateCart();
+      }
+    }
+
+    // --- LOGIN/REGISTRO ---
+    function openLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+      switchTab('login');
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    function switchTab(tabName) {
+      document.getElementById('loginTab').classList.toggle('active', tabName === 'login');
+      document.getElementById('registerTab').classList.toggle('active', tabName === 'register');
+      document.getElementById('loginContent').classList.toggle('active', tabName === 'login');
+      document.getElementById('registerContent').classList.toggle('active', tabName === 'register');
+    }
+
+    function handleLogin() {
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPassword').value;
+      if (email && pass) {
+        // Simular login exitoso
+        user = {
+          name: "Juan Pérez",
+          email: email,
+          address: "Calle 123, Ciudad",
+          orders: []
+        };
+        saveUserToLocalStorage();
+        updateHeaderForLoggedInUser();
+        alert('✅ ¡Bienvenido! Has iniciado sesión.');
+        closeLoginModal();
+      } else {
+        alert('⚠️ Por favor, completa todos los campos.');
+      }
+    }
+
+    function handleRegister() {
+      const name = document.getElementById('regName').value;
+      const lastName = document.getElementById('regLastName').value;
+      const email = document.getElementById('regEmail').value;
+      const address = document.getElementById('regAddress').value;
+      const pass = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regConfirmPassword').value;
+
+      if (!name || !lastName || !email || !address || !pass || !confirm) {
+        alert('⚠️ Por favor, completa todos los campos.');
+        return;
+      }
+
+      if (pass !== confirm) {
+        alert('⚠️ Las contraseñas no coinciden.');
+        return;
+      }
+
+      // Simular registro exitoso
+      user = {
+        name: `${name} ${lastName}`,
+        email: email,
+        address: address,
+        orders: []
+      };
+      saveUserToLocalStorage();
+      updateHeaderForLoggedInUser();
+      alert(`✅ ¡Hola ${name}! Tu cuenta ha sido creada con éxito.`);
+      closeLoginModal();
+    }
+
+    function saveUserToLocalStorage() {
+      localStorage.setItem('etech_user', JSON.stringify(user));
+    }
+
+    function loadUserFromLocalStorage() {
+      const saved = localStorage.getItem('etech_user');
+      if (saved) {
+        user = JSON.parse(saved);
+        updateHeaderForLoggedInUser();
+      }
+    }
+
+    function updateHeaderForLoggedInUser() {
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('profileBtn').style.display = 'inline-block';
+      document.getElementById('sidebar').classList.add('visible');
+    }
+
+    function logoutUser() {
+      user = null;
+      localStorage.removeItem('etech_user');
+      document.getElementById('loginBtn').style.display = 'inline-block';
+      document.getElementById('profileBtn').style.display = 'none';
+      document.getElementById('sidebar').classList.remove('visible');
+      document.getElementById('userProfile').style.display = 'none';
+      alert('✅ Has cerrado sesión.');
+    }
+
+    function showUserProfile() {
+      if (!user) return;
+      hideAllPages();
+      document.getElementById('userProfile').style.display = 'block';
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('userEmail').textContent = user.email;
+      document.getElementById('userAddress').textContent = user.address;
+
+      const ordersContainer = document.getElementById('userOrders');
+      if (user.orders && user.orders.length > 0) {
+        let html = '';
+        user.orders.forEach(order => {
+          html += `
+            <div class="order-item">
+              <h4>Orden #${order.id}</h4>
+              <p>Fecha: ${order.date}</p>
+              <p>Total: $${order.total.toFixed(2)}</p>
+            </div>
+          `;
+        });
+        ordersContainer.innerHTML = html;
+      } else {
+        ordersContainer.innerHTML = '<p>No tienes órdenes aún.</p>';
+      }
+    }
+
+    // --- CARRITO Y PAGO ---
+    document.getElementById('cartBtn').onclick = () => document.getElementById('cartOverlay').style.display = 'block';
+
+    function closeCart() {
+      document.getElementById('cartOverlay').style.display = 'none';
+    }
+
+    function showPaymentForm() {
+      if (cart.length === 0) {
+        alert('⚠️ Tu carrito está vacío.');
+        return;
+      }
+      closeCart();
+      document.getElementById('paymentModal').style.display = 'flex';
+      updatePaymentCart();
+    }
+
+    function closePayment() {
+      document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    function processPayment() {
+      const num = document.getElementById('cardNumber').value;
+      const exp = document.getElementById('cardExpiry').value;
+      const cvv = document.getElementById('cardCVV').value;
+      if (num && exp && cvv) {
+        // Simular orden
+        const order = {
+          id: Date.now(),
+          date: new Date().toLocaleString(),
+          total: cart.reduce((sum, item) => sum + item.price, 0),
+          items: [...cart]
+        };
+
+        if (user) {
+          user.orders = user.orders || [];
+          user.orders.push(order);
+          saveUserToLocalStorage();
+        }
+
+        alert('✅ ¡Pago exitoso! Tu pedido está en camino.');
+        cart = [];
+        updateCart();
+        saveCartToLocalStorage();
+        closePayment();
+      } else {
+        alert('⚠️ Por favor, completa todos los datos de la tarjeta.');
+      }
+    }
+
+    // --- INICIAR ---
+    loadCartFromLocalStorage();
+    loadUserFromLocalStorage();
+    updateCart();
+  </script>
 </body>
 </html>
